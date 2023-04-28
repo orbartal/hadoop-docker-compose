@@ -54,6 +54,10 @@ You can now open the file part-r-00000 in your host and veirfy the word count.
 Input: simple.text
 Output: part-r-00000
 
+6) Upload file to Hadoop with CURL command
+Open terminal/cmd/shell and run the following CURL command:
+curl -X PUT -T "path/to/local/file.txt" "http://datanode:9864/webhdfs/v1/user/root/output/filename.txt?op=CREATE&namenoderpcaddress=namenode:9000&createflag=&createparent=true&overwrite=false"
+Replace path/to/local/file.txt and filename.txt with the file input path and destination name.
 
 Note: We need to add datanode to etc.
 In Windows 10 open the file:
