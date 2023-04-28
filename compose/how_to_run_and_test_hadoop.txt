@@ -44,6 +44,11 @@ hadoop fs -copyToLocal /user/root/output/part-r-00000 /tmp/output/part-r-00000
 In the host shell
 docker cp namenode:/tmp/output/part-r-00000 \tmp 
 
+4.3) Download the file with CURL shell command
+In the host terminal/cmd:
+curl -o /path/in/host/filename.txt 'http://datanode:9864/webhdfs/v1/user/root/output/part-r-00000?op=OPEN&namenoderpcaddress=namenode:9000&offset=0' 
+Replace the /path/in/host/filename.txt with the path to the output file in your host machine.
+
 5) Verify the file part-r-00000
 You can now open the file part-r-00000 in your host and veirfy the word count.
 Input: simple.text
