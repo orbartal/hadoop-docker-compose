@@ -1,0 +1,58 @@
+This example is taken from article:
+https://www.section.io/engineering-education/set-up-containerize-and-test-a-single-hadoop-cluster-using-docker-and-docker-compose/
+
+0) Download the jar file from maven repo1:
+https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-mapreduce-examples/2.7.1/hadoop-mapreduce-examples-2.7.1-sources.jar
+
+
+1) Run dockers
+docker-compose up -d
+
+Open browser in url:
+http://localhost:9870/dfshealth.html
+And verify it is working as expected
+
+2) Copy job-jar into hadoop docker
+docker cp hadoop-mapreduce-examples-2.7.1-sources.jar namenode:/tmp/
+docker cp simple.text namenode:/tmp/
+
+3) Run the job-jar inside the docker
+docker exec -it namenode /bin/bash
+cd tmp
+hdfs dfs -mkdir -p /user/root/input
+hdfs dfs -put simple.text /user/root/input
+hadoop jar hadoop-mapreduce-examples-2.7.1-sources.jar org.apache.hadoop.examples.WordCount input output
+
+4) Get the output file
+
+4.1) Download from website
+Open browser in url:
+http://localhost:9870/dfshealth.html
+
+Utilities -> Browse the file system -> 	user -> root -> output -> part-r-00000
+Click on the file part-r-00000. A dialog box should open
+Click on download and choose a download path for the file.
+
+4.2) Copy it using terminal
+
+4.2.1) Copy the file from the hadoop storgae into a docker dir.
+in the docker shell
+mkdir output
+hadoop fs -copyToLocal /user/root/output/part-r-00000 /tmp/output/part-r-00000
+
+4.2.2) Copy the file from the docker into the host
+In the host shell
+docker cp namenode:/tmp/output/part-r-00000 \tmp 
+
+5) Verify the file part-r-00000
+You can now open the file part-r-00000 in your host and veirfy the word count.
+Input: simple.text
+Output: part-r-00000
+
+
+Note: We need to add datanode to etc.
+In Windows 10 open the file:
+C:\Windows\System32\drivers\etc\hosts
+And add to it the line
+127.0.0.1 datanode
+See how to do it in other OS: https://www.liquidweb.com/kb/edit-host-file-windows-10/
